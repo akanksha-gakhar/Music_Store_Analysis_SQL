@@ -1,72 +1,44 @@
-# SQL Project: Data Analysis for Zomato
+# SQL Project: Music Store Analysis
 ## Overview
-This project showcases my SQL problem-solving abilities through the analysis of data for Zomato, a leading food brand in India. It includes setting up databases, importing data, addressing null values, and resolving various business challenges using advanced SQL queries.
+In this project, you will analyze the data from a music store's database which include information about customers, playlists and artist. Using sql queries, you will extract relevant data to provide answer key questions. These insights can help the store make informed decisions about inventory management, marketing, customer preferences, and sales strategies.
 
 ## Project Structure
-* **Database Setup:** Creation of zomato_db database and the required tables.
-* **Data Import:** Inserting sample data into the tables.
-* **Data Cleaning:** Handling null values and ensuring data integrity.
-* **Business Problems:** Solving 20 specific business problems using SQL queries.
+* **Database Setup:** Creation of music_store database and the required tables.
+* **Business Problems:** Solving some specific business problems using SQL queries.
   
-## Database Setup
+### 1. Who is the senior most employee based on job title?
 ``` sql
-Create Database zomato_db;
-````
-### 1. Creating Data Tables
-``` sql
--- Zomato Data Analysis
-create database zomato_db;
-use zomato_db;
-drop table if exists orders;
-drop table if exists customers;
-drop table if exists restaurants;
-drop table if exists riders;
-drop table if exists deliveries;
-
-Create Table customers(
-customer_id INT PRIMARY KEY, 
-customer_name varchar(25),
-reg_date date
-);
-Create Table restaurants(
-restaurant_id INT PRIMARY KEY, 
-restaurant_name varchar(55),
-city varchar(15),
-opening_hour varchar(55)
-);
-Create Table orders(
-order_id INT PRIMARY KEY, 
-customer_id INT,
-restaurant_id INT,
-order_item varchar(55),
-order_date date,
-order_time time,
-order_satus varchar(55),
-total_amount float
-);
--- adding FK Constraint
-Alter Table orders
-Add constraint fk_customers
-foreign key (customer_id)
-references customers(customer_id);
--- adding FK Constraint
-Alter Table restaurants
-Add constraint fk_restaurants
-foreign key (restaurant_id)
-references restaurants(restaurant_id);
-Create Table riders(
-rider_id INT PRIMARY KEY, 
-rider_name varchar(25),
-sign_up date
-);
-
-Create table deliveries
-(deliver_id int PRIMARY KEY,
-order_id int,	
-delivery_status varchar(35),
-delivery_time time,
-rider_id int,
-constraint fk_orders foreign key (order_id) references orders(order_id),
-constraint fk_riders foreign key (rider_id) references riders(rider_id)
-);
+Select title, first_name, last_name from employee
+order by levels desc limit 1;
 ```
+### 2. Which contries have the most invoices?
+``` sql
+Select billing_country,count(*) as invoices from invoice
+group by billing_country
+order by invoices desc;
+```
+
+### 3. What are top 3 values of total invoice?
+``` sql
+Select distinct total from invoice
+order by total desc limit 3;
+```
+
+### 4. Which city has the best customers? We would like to throw a promotional Music Festival in the city we made the most money. Write a query that returns one  city that has the highest sum of invoice totals. Return both the city name & sum of all invoice totals.
+``` sql
+Select billing_city,sum(total) as total from invoice
+group by billing_city
+order by total desc limit 1;
+```
+
+### 5. Who is the best customer? The customer who has spent the most money will be declared the best customer. Write a query that returns the person who has spent the most money.
+``` sql
+Select a.customer_id, first_name, last_name, total_amt from
+(Select customer_id, sum(total) as total_amt from invoice
+group by customer_id) as a
+join 
+(Select customer_id, first_name, last_name from customer) as b
+on a.customer_id=b.customer_id
+order by total_amt desc limit 1;
+```
+
