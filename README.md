@@ -11,7 +11,7 @@ In this project, you will analyze the data from a music store's database which i
 Select title, first_name, last_name from employee
 order by levels desc limit 1;
 ```
-### 2. Which contries have the most invoices?
+### 2. Which countries have the most invoices?
 ``` sql
 Select billing_country,count(*) as invoices from invoice
 group by billing_country
